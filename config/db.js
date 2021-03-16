@@ -1,9 +1,7 @@
 const { Pool } = require("pg")
 
-let connectionString = process.env.DATABASE_URL || "postgres://horu:@:/horudb"
-
 const pool = new Pool({
-  connectionString,
+  connectionString: process.env.DB_URI,
   // ssl: {
   //   rejectUnauthorized: false,
   // },
