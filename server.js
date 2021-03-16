@@ -1,16 +1,31 @@
 const http = require("http")
+require("dotenv").config()
+const axios = require("axios")
 
-const requestListener = function (req, res) {
+const requestListener = async function (req, res) {
   res.writeHead(200)
   let referer = req.headers.referer
+  let userAgent = req.headers["user-agent"]
   let ip =
     req.headers["x-forwarded-for"] ||
     req.connection.remoteAddress ||
     req.socket.remoteAddress ||
     req.connection.socket.remoteAddress
+
   ip = ip.replace(/^.*:/, "")
 
-  res.end("ip : " + ip + "  referer : " + referer)
+  if (process.env.ENVIRONNEMENT === "dev") {
+    ip = ""
+  }
+
+  // try {
+  //   let { data } = await axios.get(
+  //     `${process.env.URL}/${ip}?token=${process.env.TOKEN}`
+  //   )
+  // } catch (err) {
+  //   console.log(err)
+  // }
+  console.log("**********")
 }
 
 const server = http.createServer(requestListener)
