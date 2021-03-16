@@ -1,7 +1,7 @@
 const http = require("http")
 require("dotenv").config()
 const axios = require("axios")
-
+let { getVisitors } = require("./sql/query")
 const requestListener = async function (req, res) {
   res.writeHead(200)
   let referer = req.headers.referer
@@ -18,6 +18,7 @@ const requestListener = async function (req, res) {
     ip = ""
   }
 
+  getVisitors().then((res) => console.log(res.rows[0]))
   // try {
   //   let { data } = await axios.get(
   //     `${process.env.URL}/${ip}?token=${process.env.TOKEN}`
