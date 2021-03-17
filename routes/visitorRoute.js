@@ -1,8 +1,9 @@
 const express = require("express")
-const { getVisitors } = require("../controllers/visitorController")
+const { getVisitors, addVisitor } = require("../controllers/visitorController")
 
 const router = express.Router()
 
 router.route("/").get(getVisitors)
+router.route("/add").get(addVisitor)
 
 module.exports = router
