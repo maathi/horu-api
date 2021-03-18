@@ -1,12 +1,13 @@
-const express = require("express")
+import express, { Application, Router } from "express"
 const cors = require("cors")
 var colors = require("colors")
 const morgan = require("morgan")
 require("dotenv").config()
 
-let visitorRouter = require("./routes/visitorRoute")
+let visitorRouter: Router = require("./routes/visitorRoute")
 
-const app = express()
+const app: Application = express()
+
 app.use(express.json())
 app.use(cors())
 
@@ -16,10 +17,8 @@ if (process.env.NODE_ENV === "development") {
 
 app.use("/api", visitorRouter)
 
-app.listen(
-  process.env.PORT,
+app.listen(process.env.PORT, () =>
   console.log(
     `Server running in ${process.env.NODE_ENV} mode on Port:${process.env.PORT}`
-      .green
   )
 )

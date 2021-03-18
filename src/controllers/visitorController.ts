@@ -1,20 +1,21 @@
 const { pool } = require("../config/db")
 const axios = require("axios")
+import { Request, Response } from "express"
 
-async function getVisitors(req, res) {
+async function getVisitors(req: Request, res: Response) {
   let { rows } = await pool.query("SELECT * FROM visitors")
 
   res.json(rows)
 }
 
-async function addVisitor(req, res) {
+async function addVisitor(req: Request, res: Response) {
   let referer = req.headers.referer
   let userAgent = req.headers["user-agent"]
   let ip =
-    req.headers["x-forwarded-for"] ||
-    req.connection.remoteAddress ||
-    req.socket.remoteAddress ||
-    req.connection.socket.remoteAddress
+    // req.headers["x-forwarded-for"]
+    req.connection.remoteAddress
+  // req.socket.remoteAddress
+  // req.connection.socket.remoteAddress
   ip = ip.replace(/^.*:/, "")
 
   if (process.env.NODE_ENV === "development") {
