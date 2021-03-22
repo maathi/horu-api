@@ -4,7 +4,7 @@ var colors = require("colors")
 const morgan = require("morgan")
 require("dotenv").config()
 
-let visitorRouter: Router = require("./routes/visitorRoute")
+let visitRouter: Router = require("./routes/visitRoute")
 
 const app: Application = express()
 
@@ -15,7 +15,7 @@ if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"))
 }
 
-app.use("/api", visitorRouter)
+app.use("/api", visitRouter)
 
 app.listen(process.env.PORT, () =>
   console.log(

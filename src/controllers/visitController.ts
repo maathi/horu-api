@@ -2,15 +2,15 @@ const { pool } = require("../config/db")
 const axios = require("axios")
 import { Request, Response } from "express"
 
-async function getVisitors(req: Request, res: Response) {
-  let { rows } = await pool.query("SELECT * FROM visitors")
-
+async function getVisits(req: Request, res: Response) {
+  let { rows } = await pool.query("SELECT * FROM visits")
+  console.log(rows)
   res.json(rows)
 }
 
-async function addVisitor(req: Request, res: Response) {
+async function addVisit(req: Request, res: Response) {
   let referer = req.headers.referer
-  let userAgent = req.headers["user-agent"]
+  let agent = req.headers["user-agent"]
   let ip =
     // req.headers["x-forwarded-for"]
     req.connection.remoteAddress
@@ -29,8 +29,8 @@ async function addVisitor(req: Request, res: Response) {
     let { city, loc } = data
 
     const text =
-      "INSERT INTO visitors(referer, useragent, ip, city, loc) VALUES($1, $2, $3, $4, $5) RETURNING *"
-    const values = [referer, userAgent, ip, city, loc]
+      "INSERT INTO visits(referer, agent, ip, city, loc) VALUES($1, $2, $3, $4, $5) RETURNING *"
+    const values = [referer, agent, ip, city, loc]
     let { rows } = await pool.query(text, values)
     res.json(rows[0])
   } catch (err) {
@@ -38,4 +38,4 @@ async function addVisitor(req: Request, res: Response) {
   }
 }
 
-module.exports = { getVisitors, addVisitor }
+module.exports = { getVisits, addVisit }
