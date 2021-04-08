@@ -4,7 +4,6 @@ import { Request, Response } from "express"
 
 async function getVisits(req: Request, res: Response) {
   let { rows } = await pool.query("SELECT * FROM visits")
-  console.log(rows)
   res.json(rows)
 }
 
