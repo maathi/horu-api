@@ -66,8 +66,11 @@ async function addEvent(req: Request, res: Response) {
                LIMIT 1)
    RETURNING *
    `
-
-  let { rows } = await pool.query(text, [event, ip])
-  res.json(rows)
+  try {
+    let { rows } = await pool.query(text, [event, ip])
+    res.json(rows)
+  } catch (err) {
+    console.log(">>>>>", err)
+  }
 }
 module.exports = { getVisits, addVisit, addEvent }
