@@ -6,6 +6,7 @@ var parser = require("ua-parser-js")
 
 async function getVisits(req: Request, res: Response) {
   let { rows } = await pool.query("SELECT * FROM visits")
+  console.log(rows)
   res.json(rows)
 }
 
@@ -50,4 +51,23 @@ async function addVisit(req: Request, res: Response) {
   }
 }
 
-module.exports = { getVisits, addVisit }
+async function addEvent(req: Request, res: Response) {
+  const ip = requestIp.getClientIp(req)
+  const { event } = req.body
+
+  //adding events to the latest appearance of a visit with a given ip
+  const text = `
+   UPDATE visits
+   SET events = array_append(events,$1::json)
+   WHERE id = (SELECT id 
+               FROM visits 
+               WHERE ip = $2
+               ORDER BY id DESC
+               LIMIT 1)
+   RETURNING *
+   `
+
+  let { rows } = await pool.query(text, [event, ip])
+  res.json(rows)
+}
+module.exports = { getVisits, addVisit, addEvent }
