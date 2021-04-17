@@ -5,6 +5,7 @@ const morgan = require("morgan")
 require("dotenv").config()
 
 let visitRouter: Router = require("./routes/visitRoute")
+let deviceRouter: Router = require("./routes/deviceRoute")
 
 const app: Application = express()
 
@@ -16,6 +17,7 @@ if (process.env.NODE_ENV === "development") {
 }
 
 app.use("/api", visitRouter)
+app.use("/api", deviceRouter)
 
 app.listen(process.env.PORT, () =>
   console.log(
