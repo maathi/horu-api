@@ -66,8 +66,11 @@ async function addVisit(req: Request, res: Response) {
 
 async function addEvent(req: Request, res: Response) {
   const ip = requestIp.getClientIp(req)
-  const { event } = req.body
 
+  const event = {
+    title: req.body.title,
+    time: Date.now(),
+  }
   //adding events to the latest appearance of a visit with a given ip
   const text = `
    UPDATE visits
@@ -81,8 +84,7 @@ async function addEvent(req: Request, res: Response) {
    `
   try {
     let { rows } = await pool.query(text, [event, ip])
-    console.log("your rows", rows)
-    res.json(rows)
+    res.json(rows[0])
   } catch (err) {
     console.log(">>>>>", err)
   }

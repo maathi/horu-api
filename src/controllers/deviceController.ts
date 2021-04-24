@@ -49,7 +49,6 @@ async function getDeviceByName(req: Request, res: Response) {
   `
 
   let { rows } = await pool.query(text, [name])
-  console.log("your thing", rows[0])
 
   res.json(rows[0])
 }
@@ -77,7 +76,6 @@ async function addDevice(ip, city, country, location, os, browser, agent) {
     browser,
     agent,
   ])
-  console.log("created", rows[0])
   return rows[0]
 }
 
