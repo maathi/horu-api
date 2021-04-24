@@ -18,7 +18,7 @@ async function getDevices(req: Request, res: Response) {
 }
 
 async function checkDevice(ip, city, agent) {
-  //just use the device agent instead | can also use provider name
+  //can also use provider name
   const query = `
       SELECT id
       FROM devices
@@ -26,11 +26,35 @@ async function checkDevice(ip, city, agent) {
     `
 
   let { rows } = await pool.query(query, [ip, city, agent])
-  console.log("exists", rows[0])
   return rows[0]
 }
 
-async function addDevice(ip, city, country, loc, os, browser, agent) {
+async function getDeviceByName(req: Request, res: Response) {
+  const { name } = req.params
+  const text = `
+    SELECT *
+    FROM 
+      devices d, 
+      (
+       SELECT device_id, 
+              array_agg(
+                json_build_object(
+                 'id', v.id, 'time', v.time, 'referer', v.referer, 'events', v.events
+                )
+              ) as visits
+       FROM visits v
+       GROUP BY v.device_id
+      ) va
+    WHERE d.id = va.device_id and name = $1
+  `
+
+  let { rows } = await pool.query(text, [name])
+  console.log("your thing", rows[0])
+
+  res.json(rows[0])
+}
+
+async function addDevice(ip, city, country, location, os, browser, agent) {
   // if (checkDevice(ip, city, agent)) return
 
   const name: string = uniqueNamesGenerator({
@@ -39,7 +63,7 @@ async function addDevice(ip, city, country, loc, os, browser, agent) {
   })
 
   const text = `
-      INSERT INTO devices (name, ip, city, country, loc, os, browser, agent)
+      INSERT INTO devices (name, ip, city, country, location, os, browser, agent)
       VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
       RETURNING *
     `
@@ -48,7 +72,7 @@ async function addDevice(ip, city, country, loc, os, browser, agent) {
     ip,
     city,
     country,
-    loc,
+    location,
     os,
     browser,
     agent,
@@ -57,4 +81,4 @@ async function addDevice(ip, city, country, loc, os, browser, agent) {
   return rows[0]
 }
 
-module.exports = { getDevices, checkDevice, addDevice }
+module.exports = { getDevices, getDeviceByName, checkDevice, addDevice }

@@ -19,17 +19,10 @@ async function getVisits(req: Request, res: Response) {
           ) device
     FROM visits, devices
     WHERE devices.id = visits.device_id
+    ORDER BY visits.id DESC
   `
   let { rows } = await pool.query(text)
 
-  const text2 = `
-    SELECT *
-    FROM devices
-    WHERE divice.id = $1
-  `
-
-  // let { rows } = await pool.query(text)
-  console.log(rows)
   res.json(rows)
 }
 
@@ -43,7 +36,7 @@ async function addVisit(req: Request, res: Response) {
     let { data } = await axios.get(
       `${process.env.URL}/${ip}?token=${process.env.TOKEN}`
     )
-    let { country, city, loc } = data
+    let { country, city, loc: location } = data
 
     let device = await checkDevice(ip, city, agent)
 
@@ -52,7 +45,7 @@ async function addVisit(req: Request, res: Response) {
         ip,
         city,
         country,
-        loc,
+        location,
         os.name,
         browser.name,
         agent
@@ -79,15 +72,16 @@ async function addEvent(req: Request, res: Response) {
   const text = `
    UPDATE visits
    SET events = array_append(events,$1::json)
-   WHERE id = (SELECT id 
-               FROM visits 
-               WHERE ip = $2
-               ORDER BY id DESC
+   WHERE id = (SELECT v.id 
+               FROM visits v, devices d
+               WHERE v.device_id = d.id AND d.ip = $2
+               ORDER BY v.id DESC
                LIMIT 1)
    RETURNING *
    `
   try {
     let { rows } = await pool.query(text, [event, ip])
+    console.log("your rows", rows)
     res.json(rows)
   } catch (err) {
     console.log(">>>>>", err)

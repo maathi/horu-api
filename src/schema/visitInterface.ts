@@ -4,6 +4,6 @@ interface VisitInterface {
   agent: String
   ip: String
   city: String
-  loc: String
+  location: String
   time: Date
 }
