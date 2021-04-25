@@ -17,15 +17,20 @@ async function getDevices(req: Request, res: Response) {
   res.json(rows)
 }
 
-async function checkDevice(ip, city, agent) {
+async function checkDevice(ip) {
   //can also use provider name
-  const query = `
-      SELECT id
-      FROM devices
-      WHERE ip = $1 OR (city = $2 AND agent = $3)
-    `
+  // const query = `
+  //     SELECT id
+  //     FROM devices
+  //     WHERE ip = $1 OR (city = $2 AND agent = $3)
+  //   `
 
-  let { rows } = await pool.query(query, [ip, city, agent])
+  const query = `
+  SELECT id
+  FROM devices
+  WHERE ip = $1 
+`
+  let { rows } = await pool.query(query, [ip])
   return rows[0]
 }
 

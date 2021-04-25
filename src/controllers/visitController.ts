@@ -33,14 +33,14 @@ async function addVisit(req: Request, res: Response) {
   let { browser, os } = parser(req.headers["user-agent"])
 
   try {
-    let { data } = await axios.get(
-      `${process.env.URL}/${ip}?token=${process.env.TOKEN}`
-    )
-    let { country, city, loc: location } = data
+    let device = await checkDevice(ip)
 
-    let device = await checkDevice(ip, city, agent)
+    if (!device) {
+      let { data } = await axios.get(
+        `${process.env.URL}/${ip}?token=${process.env.TOKEN}`
+      )
+      let { country, city, loc: location } = data
 
-    if (!device)
       device = await addDevice(
         ip,
         city,
@@ -50,6 +50,7 @@ async function addVisit(req: Request, res: Response) {
         browser.name,
         agent
       )
+    }
 
     const text = `INSERT INTO visits(referer, device_id)
        VALUES($1, $2) 
