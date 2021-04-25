@@ -45,7 +45,7 @@ async function getDeviceByName(req: Request, res: Response) {
               array_agg(
                 json_build_object(
                  'id', v.id, 'time', v.time, 'referer', v.referer, 'events', v.events
-                )
+                ) ORDER BY v.id DESC
               ) as visits
        FROM visits v
        GROUP BY v.device_id
