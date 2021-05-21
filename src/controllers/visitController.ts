@@ -28,7 +28,7 @@ async function getVisits(req: Request, res: Response) {
 
 async function addVisit(req: Request, res: Response) {
   let ip = requestIp.getClientIp(req)
-  let referer = req.headers.referer
+  let referer = req.body.referer
   let agent = req.headers["user-agent"]
   let { browser, os } = parser(req.headers["user-agent"])
 

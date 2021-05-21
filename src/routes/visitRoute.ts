@@ -8,7 +8,7 @@ const {
 const router: Router = express.Router()
 
 router.route("/").get(getVisits)
-router.route("/add").get(addVisit)
+router.route("/add").post(addVisit)
 router.route("/event").post(addEvent)
 
 module.exports = router
