@@ -59,7 +59,7 @@ async function addVisit(req: Request, res: Response) {
 
     const values = [referer, device.id]
     let { rows } = await pool.query(text, values)
-    res.json(rows[0])
+    res.json({})
   } catch (err) {
     console.log(err)
   }
