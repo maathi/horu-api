@@ -6,6 +6,6 @@ const {
 
 const router: Router = express.Router()
 
-router.route("/devices").get(getDevices)
+router.route("/devicesus").get(getDevices)
 router.route("/:name").get(getDeviceByName)
 module.exports = router
